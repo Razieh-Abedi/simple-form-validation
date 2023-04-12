@@ -1,20 +1,18 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 
 const SimpleInput = (props) => {
   const [enteredName, setEnteredName] = useState("");
-  const [enteredNameIsValid, setEnteredNameIsValid] = useState(false);
   const [enteredNameIsTouched, setEnteredNameIsTouched] = useState(false);
-  // ***set input only when the form is submitted
-  const nameInputRef = useRef();
 
-  useEffect(() => {
-    if (enteredNameIsValid) {
-      //send an http request
-      console.log("entered name is valid");
-    }
-  }, [enteredNameIsValid]);
+  const enteredNameIsValid = enteredName.trim().length !== 0;
+  const nameInputIsInvalid = !enteredNameIsValid && enteredNameIsTouched;
 
-  //****set input on keystroke */
+  //validate the form when input loses focus
+  const nameInputBlurHandler = (event) => {
+    setEnteredNameIsTouched(true);
+  };
+
+  //****set input on keystroke- validate input on keystroke*/
   const nameInputChangeHandler = (event) => {
     setEnteredName(event.target.value);
   };
@@ -22,18 +20,14 @@ const SimpleInput = (props) => {
   const formSubmitHandler = (event) => {
     event.preventDefault();
     setEnteredNameIsTouched(true);
-    if (enteredName.trim().length === 0) {
-      setEnteredNameIsValid(false);
+    if (!enteredNameIsValid) {
       return;
     }
 
-    setEnteredNameIsValid(true);
     console.log(enteredName);
-    const enteredValue = nameInputRef.current.value;
-    console.log(enteredValue);
+    setEnteredName("");
+    setEnteredNameIsTouched(false);
   };
-
-  const nameInputIsInvalid = !enteredNameIsValid && enteredNameIsTouched;
 
   const nameInputClasses = nameInputIsInvalid
     ? "form-control invalid"
@@ -44,10 +38,10 @@ const SimpleInput = (props) => {
       <div className={nameInputClasses}>
         <label htmlFor="name">Your Name</label>
         <input
-          ref={nameInputRef}
           type="text"
           id="name"
           onChange={nameInputChangeHandler}
+          onBlur={nameInputBlurHandler}
         />
       </div>
       {nameInputIsInvalid && (
