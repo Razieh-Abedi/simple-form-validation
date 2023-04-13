@@ -7,6 +7,12 @@ const SimpleInput = (props) => {
   const enteredNameIsValid = enteredName.trim().length !== 0;
   const nameInputIsInvalid = !enteredNameIsValid && enteredNameIsTouched;
 
+  //overall form validation
+  let formIsValid = false;
+  if (enteredNameIsValid) {
+    formIsValid(true);
+  }
+
   //validate the form when input loses focus
   const nameInputBlurHandler = (event) => {
     setEnteredNameIsTouched(true);
@@ -48,7 +54,7 @@ const SimpleInput = (props) => {
         <p className="error-text">Name must not be empty!</p>
       )}
       <div className="form-actions">
-        <button>Submit</button>
+        <button disabled={!formIsValid}>Submit</button>
       </div>
     </form>
   );
